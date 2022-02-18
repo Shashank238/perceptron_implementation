@@ -1,14 +1,21 @@
 from calendar import EPOCH
+import os
 from statistics import mode
 from utils.model import Perceptron
 from utils.all_utils import prepare_data, save_model, save_plot
 import pandas as pd
 import numpy as np
+import logging
+
+logging_str = "[%(asctime)s: %(levelname)s: %(module)s] %(message)s"
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok = True)
+logging.basicConfig(filename= os.path.join(log_dir,"running_logs.log"), level=logging.INFO, format=logging_str)
 
 def main(data,eta, epoch):
     
     df = pd.DataFrame(data)
-    print(df)
+    logging.info(f"this is the actual data frame{df}")
 
     X,y = prepare_data(df)
 
@@ -29,4 +36,9 @@ if __name__ == '__main__':
     }
     ETA = 0.3 # 0 and 1
     EPOCHS = 10
-    main(data=AND,eta=ETA,epoch=EPOCHS) 
+    try:
+        logging.info(">>>>>>> Starting")    
+        main(data=AND,eta=ETA,epoch=EPOCHS) 
+    except Exception as e:
+        logging.exception(e)
+        raise e
